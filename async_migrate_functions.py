@@ -1,6 +1,24 @@
 import asyncio
 import asyncpg
 
+# Example usage
+source_connection_info = {
+    "host": "127.0.0.1",
+    "port":5432,
+    "database": "your_database_name",
+    "user": "your_username",
+    "password": "your_password",
+}
+
+dest_connection_info = {
+    "host": "127.0.0.1",
+    "port":5432,
+    "database": "your_database_name",
+    "user": "your_username",
+    "password": "your_password",
+}
+
+
 async def get_function_names(source_conn):
     try:
         source_connection = await asyncpg.connect(**source_conn)
@@ -19,6 +37,8 @@ async def get_function_names(source_conn):
 
 async def migrate_functions(source_conn, dest_conn):
     functions_to_migrate = await get_function_names(source_conn)
+
+    source_connection = dest_connection = None
 
     try:
         source_connection = await asyncpg.connect(**source_conn)
@@ -41,20 +61,6 @@ async def migrate_functions(source_conn, dest_conn):
         if dest_connection:
             await dest_connection.close()
 
-# Example usage
-source_connection_info = {
-    "host": "source_db_host",
-    "database": "db1",
-    "user": "your_username",
-    "password": "your_password",
-}
-
-dest_connection_info = {
-    "host": "dest_db_host",
-    "database": "db2",
-    "user": "your_username",
-    "password": "your_password",
-}
 
 # Run the migration asynchronously
 asyncio.run(migrate_functions(source_connection_info, dest_connection_info))
